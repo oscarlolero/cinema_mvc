@@ -1,0 +1,4 @@
+user:root
+password:6932124
+host:localhost
+database:cinema
