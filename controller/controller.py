@@ -19,6 +19,7 @@ class Controller:
         password = input()
         user = self.model.auth_user(username, password)
         self.user_id = user[0]
+        self.is_admin = user[3]
         if type(user) == tuple:
             self.main_menu(user[3])
         else:
@@ -31,7 +32,7 @@ class Controller:
     def main_menu(self, isAdmin):
         if not isAdmin:
             o = '0'
-            while o != '2':
+            while o != '4':
                 self.view.main_menu(isAdmin)
                 o = input()
                 if o == '1':
@@ -39,6 +40,8 @@ class Controller:
                 elif o == '2':
                     self.buy_ticket_menu()
                 elif o == '3':
+                    self.show_user_tickets(self.user_id)
+                elif o == '4':
                     self.view.end()
                 else:
                     self.view.not_valid_option()
@@ -102,4 +105,12 @@ class Controller:
         function_schedule_id = self.model.get_function_schedule_id(movie_selected, date_selected, schedule_selected.strip())
         self.model.create_ticket(function_schedule_id, self.user_id, seat_selected)
         self.view.show_order_details(movie_selected, date_selected, schedule_selected, seat_selected)
-        self.view.msg('¡Compraste el boleto de manera exitosa!')
+        self.view.msg('¡Compraste el boleto de manera exitosa!, presiona cualquier tecla para continuar.')
+        tmp = input()
+        self.main_menu(self.is_admin)
+
+    
+    def show_user_tickets(self, user_id):
+        user_tickets = self.model.get_user_tickets(user_id)
+        self.view.msg('A continuación se muestran tus boletos reservados:')
+        self.view.show_user_tickets(user_tickets)

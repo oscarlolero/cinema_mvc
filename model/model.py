@@ -59,12 +59,10 @@ class Model:
         sql = 'SELECT function_schedules.function_schedule_id FROM function_schedules JOIN movie_schedules ON movie_schedules.movie_schedule_id = function_schedules.movie_schedule_id AND function_schedules.date = %s AND movie_schedules.time = %s'
         self.cursor.execute(sql, (converted_date, time))
         record = self.cursor.fetchone()
-        print(f'schedule exists? {record} from "{date}", "{time}"')
         return type(record) == tuple
 
     def get_function_schedule_id(self, movie, date, time):
         converted_date = datetime.strptime(date, '%d de %B del %Y').strftime('%d-%m-%Y')
-        print(f'"{movie}", "{date}", "{time}"')
         sql = 'SELECT function_schedules.function_schedule_id FROM function_schedules JOIN movies  ON movies.name = %s  JOIN movie_schedules ON movie_schedules.movie_id = movies.movie_id  AND function_schedules.date = %s AND movie_schedules.time = %s'
         self.cursor.execute(sql, (movie, converted_date, time))
         record = self.cursor.fetchall()
@@ -73,7 +71,6 @@ class Model:
     def create_function_schedule(self, movie_schedule_id, date_selected):
         converted_date = datetime.strptime(date_selected, '%d de %B del %Y').strftime('%d-%m-%Y')
         try:
-            print(f'se va a create_function_schedule con movie sch {movie_schedule_id}')
             sql = 'INSERT INTO function_schedules (`movie_schedule_id`, `date`) VALUES(%s, %s)'
             self.cursor.execute(sql, (movie_schedule_id, converted_date))
             self.cnx.commit()
@@ -86,7 +83,6 @@ class Model:
     def get_occupied_seats(self, movie, date, time):
         converted_date = datetime.strptime(date, '%d de %B del %Y').strftime('%d-%m-%Y')
         try:
-            print(f'get occupied seats of "{movie}", "{converted_date}", "{time}"')
             sql = 'SELECT function_schedules.function_schedule_id, GROUP_CONCAT(tickets.seat SEPARATOR ",") as seats FROM tickets JOIN function_schedules ON function_schedules.function_schedule_id = tickets.function_schedule_id JOIN movie_schedules ON movie_schedules.movie_schedule_id = function_schedules.movie_schedule_id JOIN movies ON movies.movie_id = movie_schedules.movie_id AND movies.name = %s AND function_schedules.date = %s AND movie_schedules.time = %s'
             self.cursor.execute(sql, (movie, converted_date, time))
             record = self.cursor.fetchone()
@@ -96,18 +92,19 @@ class Model:
 
     def create_ticket(self, function_schedule_id, user_id, seat_selected):
         try:
-            print(f'se va a crear ticket con func sched {function_schedule_id} y {user_id}, {seat_selected}')
-            print(f'tipos {type(function_schedule_id)} y {type(user_id)}, {type(seat_selected)}')
             sql = 'INSERT INTO tickets (`function_schedule_id`, `user_id`, `seat`) VALUES(%s, %s, %s)'
             self.cursor.execute(sql, (function_schedule_id, user_id, seat_selected.upper()))
-            print('se ejecuta')
             self.cnx.commit()
-            print('se hace commit')
             return True
         except connector.Error as err:
-            print('error con ticket')
             print(err)
             return err
+    
+    def get_user_tickets(self, user_id):
+        sql = 'SELECT movies.name, function_schedules.date, movie_schedules.time, halls.name, GROUP_CONCAT(tickets.seat SEPARATOR ", ") AS seats FROM users JOIN tickets ON users.user_id = tickets.user_id JOIN function_schedules ON tickets.function_schedule_id = function_schedules.function_schedule_id JOIN movie_schedules ON function_schedules.movie_schedule_id = movie_schedules.movie_schedule_id JOIN movies ON movie_schedules.movie_id = movies.movie_id JOIN halls ON movie_schedules.hall_id = halls.hall_id AND users.user_id = %s GROUP BY function_schedules.function_schedule_id ORDER BY function_schedules.date'
+        self.cursor.execute(sql, (user_id,))
+        records = self.cursor.fetchall()
+        return records
 
     "Halls"
     def get_hall_capacity(self, movie, time):

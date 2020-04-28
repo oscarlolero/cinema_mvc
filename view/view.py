@@ -29,8 +29,9 @@ class View:
             print('Bienvenido al Cine Los Pibes')
             print('1. Cartelera')
             print('2. Comprar boleto')
-            print('3. Salir')
-            self.option('3')
+            print('3. Ver mis boletos')
+            print('4. Salir')
+            self.option('4')
 
     def option(self, last):
         print('Selecciona una opcion (1-'+last+'):', end = '')
@@ -76,6 +77,12 @@ class View:
         table.add_row(['Fecha:', date_selected])
         table.add_row(['Hora:', schedule_selected])
         table.add_row(['Asiento:', seat_selected])
+        print(table)
+    
+    def show_user_tickets(self, tickets):
+        table = PrettyTable(['Película', 'Fecha', 'Hora', 'Sala', 'Asientos'])
+        for ticket in tickets:
+            table.add_row([ticket[0], ticket[1], ticket[2], ticket[3], ticket[4],])
         print(table)
 
 
