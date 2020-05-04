@@ -265,8 +265,14 @@ class Model:
 
     def create_ticket(self, function_schedule_id, user_id, seat_selected):
         try:
-            sql = 'INSERT INTO tickets (`function_schedule_id`, `user_id`, `seat`) VALUES(%s, %s, %s)'
-            self.cursor.execute(sql, (function_schedule_id, user_id, seat_selected.upper()))
+            sql = 'INSERT INTO tickets (`function_schedule_id`, `seat`) VALUES(%s, %s)'
+            self.cursor.execute(sql, (function_schedule_id, seat_selected.upper()))
+            self.cnx.commit()
+            sql = 'SELECT ticket_id FROM tickets WHERE function_schedule_id = %s AND seat = %s'
+            self.cursor.execute(sql, (function_schedule_id, seat_selected.upper()))
+            ticket_id = self.cursor.fetchone()[0]
+            sql = 'INSERT INTO user_tickets (`ticket_id`, `user_id`) VALUES(%s, %s)'
+            self.cursor.execute(sql, (ticket_id, user_id))
             self.cnx.commit()
             return True
         except connector.Error as err:
@@ -274,7 +280,7 @@ class Model:
             return err
     
     def get_user_tickets(self, user_id):
-        sql = 'SELECT movies.name, function_schedules.date, movie_schedules.time, halls.name, GROUP_CONCAT(tickets.seat SEPARATOR ", ") AS seats FROM users JOIN tickets ON users.user_id = tickets.user_id JOIN function_schedules ON tickets.function_schedule_id = function_schedules.function_schedule_id JOIN movie_schedules ON function_schedules.movie_schedule_id = movie_schedules.movie_schedule_id JOIN movies ON movie_schedules.movie_id = movies.movie_id JOIN halls ON movie_schedules.hall_id = halls.hall_id AND users.user_id = %s GROUP BY function_schedules.function_schedule_id ORDER BY function_schedules.date'
+        sql = 'SELECT movies.name, function_schedules.date, movie_schedules.time, halls.name, GROUP_CONCAT(tickets.seat SEPARATOR ", ") AS seats FROM user_tickets JOIN tickets ON user_tickets.ticket_id = tickets.ticket_id JOIN function_schedules ON tickets.function_schedule_id = function_schedules.function_schedule_id JOIN movie_schedules ON function_schedules.movie_schedule_id = movie_schedules.movie_schedule_id JOIN movies ON movie_schedules.movie_id = movies.movie_id JOIN halls ON movie_schedules.hall_id = halls.hall_id AND user_tickets.user_id = %s GROUP BY function_schedules.function_schedule_id ORDER BY function_schedules.date'
         self.cursor.execute(sql, (user_id,))
         records = self.cursor.fetchall()
         return records
