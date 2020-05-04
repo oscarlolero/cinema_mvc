@@ -179,7 +179,7 @@ class Model:
     "Schedules methods"
     def get_schedules_list(self):
         try:
-            sql = 'SELECT movies.name, movies.rating, GROUP_CONCAT(movie_schedules.time SEPARATOR ', ') time FROM movies JOIN movie_schedules ON movies.movie_id = movie_schedules.movie_id GROUP BY movies.name;'
+            sql = 'SELECT movies.name, movies.rating, halls.name, GROUP_CONCAT(movie_schedules.time SEPARATOR ", ") AS time FROM movies JOIN movie_schedules ON movies.movie_id = movie_schedules.movie_id JOIN halls ON movie_schedules.hall_id = halls.hall_id GROUP BY movies.name'
             self.cursor.execute(sql)
             records = self.cursor.fetchall()
             return records

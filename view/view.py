@@ -89,6 +89,12 @@ class View:
             index += 1
         print(table)
 
+    def show_schedules(self, movie_schedules):
+        table = PrettyTable(['Pelicula', 'Clasificacion', 'Sala', 'Horarios'])
+        for movie in movie_schedules:
+            table.add_row([movie[0], movie[1], movie[2], movie[3]])
+        print(table)
+
     "Movies methods"
     def show_movies(self, movies):
         table = PrettyTable(['Numero', 'Pelicula', 'Clasificacion'])

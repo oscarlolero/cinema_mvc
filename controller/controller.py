@@ -91,7 +91,6 @@ class Controller:
         result = self.model.delete_schedule(movie_schedule_id)
         self.view.success('eliminar horario') if result else self.view.error('eliminar horario')
         self.schedules_menu()
-
     def add_schedule(self):
         movies = self.model.get_movies_list()
         self.view.show_movies(movies)
@@ -108,7 +107,6 @@ class Controller:
         result = self.model.insert_schedule(movie_selected, hall_selected, date)
         self.view.success('agregar horario') if result else self.view.error('agregar horario')
         self.schedules_menu()
-    
     def edit_schedule(self):
         movie_schedules = self.model.get_detailed_schedules_list()
         self.view.show_detailed_movie_schedules(movie_schedules)
@@ -224,7 +222,7 @@ class Controller:
 
     def show_movies(self):
         movies = self.model.get_movies_list()
-        self.view.show_halls(movies)
+        self.view.show_movies(movies)
         self.movies_menu()
 
     def delete_movie(self):
