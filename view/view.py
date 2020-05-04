@@ -41,6 +41,20 @@ class View:
 
     
     "** Admin methods"
+    "User granted methods"
+    def show_admins(self, admins):
+        table = PrettyTable(['Usuario', 'Contraseña'])
+        for admin in admins:
+            table.add_row([admin[0], admin[1]])
+        print(table)
+
+    def show_indexed_admins(self, admins):
+        table = PrettyTable(['Numero', 'Usuario', 'Contraseña'])
+        index = 1
+        for admin in admins:
+            table.add_row([index, admin[0], admin[1]])
+            index += 1
+        print(table)
 
     "Schedule methods"
     def show_schedules_methods(self):
@@ -78,6 +92,14 @@ class View:
         print('4. Eliminar película')
         print('5. Regresar')
         self.option('5')
+
+    def show_admin_methods(self):
+        print('Menú de administradores')
+        print('1. Ver todas los administradores')
+        print('2. Agregar administrador')
+        print('3. Eliminar administrador')
+        print('4. Regresar')
+        self.option('4')
 
     "** Users methods"
     "Schedules"

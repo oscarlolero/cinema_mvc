@@ -31,6 +31,36 @@ class Model:
         return record
 
     "* Admin methods"
+    "User granted methods"
+    def delete_admin(self, admin):
+        try:
+            sql = 'DELETE FROM users WHERE username = %s'
+            self.cursor.execute(sql, (admin,))
+            self.cnx.commit()
+            return True
+        except connector.Error as err:
+            return err
+
+    def get_admins_list(self):
+        try:
+            sql = 'SELECT username, password FROM users WHERE is_admin = 1'
+            self.cursor.execute(sql)
+            records = self.cursor.fetchall()
+            return records
+        except connector.Error as err:
+            return err
+
+    def add_admin(self, new_user, new_password):
+        try:
+            sql = 'INSERT INTO users (`username`, `password`, `is_admin`) VALUES(%s, %s, %s)'
+            self.cursor.execute(sql, (new_user, new_password, 1))
+            self.cnx.commit()
+            return True
+        except connector.Error as err:
+            print(err)
+            return err
+    
+
     "Schedules methods"
     def delete_schedule(self, movie_schedule_id):
         print(movie_schedule_id)
@@ -180,6 +210,14 @@ class Model:
     def get_schedules_list(self):
         try:
             sql = 'SELECT movies.name, movies.rating, halls.name, GROUP_CONCAT(movie_schedules.time SEPARATOR ", ") AS time FROM movies JOIN movie_schedules ON movies.movie_id = movie_schedules.movie_id JOIN halls ON movie_schedules.hall_id = halls.hall_id GROUP BY movies.name'
+            self.cursor.execute(sql)
+            records = self.cursor.fetchall()
+            return records
+        except connector.Error as err:
+            return err
+    def get_schedules(self):
+        try:
+            sql = 'SELECT movies.name, movies.rating, GROUP_CONCAT(movie_schedules.time SEPARATOR ", ") AS time FROM movies JOIN movie_schedules ON movies.movie_id = movie_schedules.movie_id GROUP BY movies.name'
             self.cursor.execute(sql)
             records = self.cursor.fetchall()
             return records

@@ -33,7 +33,7 @@ class Controller:
     def main_menu(self, isAdmin):
         if isAdmin:
             o = '0'
-            while o != '4':
+            while o != '5':
                 self.view.main_menu(isAdmin)
                 o = input()
                 if o == '1':
@@ -43,7 +43,9 @@ class Controller:
                 elif o == '3':
                     self.schedules_menu()
                 elif o == '4':
-                    self.view.end()
+                    self.admins_menu()
+                elif o == '5':
+                    return self.view.end()
                 else:
                     self.view.not_valid_option()
             return
@@ -59,12 +61,117 @@ class Controller:
                 elif o == '3':
                     self.show_user_tickets(self.user_id)
                 elif o == '4':
-                    self.view.end()
+                    return self.view.end()
                 else:
                     self.view.not_valid_option()
             return
 
     "** Admin methods"
+    "Granted users"
+    def admins_menu(self):
+        o = '0'
+        while o == '0':
+            self.view.show_admin_methods()
+            o = input()
+            if o == '1':
+                self.show_admins()
+            if o == '2':
+                self.add_admin()
+            elif o == '3':
+                self.delete_admin()
+            elif o == '4':
+                self.main_menu(1)
+        return
+    def delete_admin(self):
+        admins = self.model.get_admins_list()
+        self.view.show_indexed_admins(admins)
+        self.view.msg('Selecciona un numero de administrador')
+        number_selected = input()
+        admin_selected = admins[int(number_selected)-1][0]
+
+        result = self.model.delete_admin(admin_selected)
+        self.view.success('eliminar administrador') if result else self.view.error('eliminar administrador')
+
+    def show_admins(self):
+        admins = self.model.get_admins_list()
+        self.view.show_admins(admins)
+
+    def add_admin(self):
+        self.view.msg('Introduce el nombre de usuario del administrador')
+        new_user = input()
+        self.view.msg('Introduce la contraseña del administrador nuevo')
+        new_password = input()
+
+        result = self.model.add_admin(new_user, new_password)
+        self.view.success('agregar administrador') if result else self.view.error('agregar administrador')
+        self.admins_menu()
+        
+    "Halls"
+    def halls_menu(self):
+        o = '0'
+        while o == '0':
+            self.view.show_halls_methods()
+            o = input()
+            if o == '1':
+                self.show_halls()
+            if o == '2':
+                self.add_hall()
+            elif o == '3':
+                self.edit_hall()
+            elif o == '4':
+                self.delete_hall()
+            elif o == '5':
+                self.main_menu(1)
+        return
+
+    def show_halls(self):
+        halls = self.model.get_halls_list()
+        self.view.show_halls(halls)
+        self.halls_menu()
+
+    def add_hall(self):
+        self.view.msg('Introduce el nombre de la sala')
+        new_name = input()
+        self.view.msg('Introduce el numero de columnas de asientos')
+        new_x = input()
+        self.view.msg('Introduce el numero de filas de asientos')
+        new_y = input()
+
+        result = self.model.insert_hall(new_name, new_x, new_y)
+        self.view.success('agregar sala') if result else self.view.error('agregar sala')
+
+    def edit_hall(self):
+        halls = self.model.get_halls_list()
+        self.view.show_halls(halls)
+        self.view.msg('Selecciona un numero de sala a editar')
+        number_selected = input()
+        hall_selected = halls[int(number_selected)-1][0]
+        seats_x = halls[int(number_selected)-1][1]
+        seats_y = halls[int(number_selected)-1][2]
+
+        self.view.msg('Introduce el nuevo nombre de la sala: (deja en blanco para dejar igual)')
+        input_text = input()
+        new_name = input_text if input_text != '' else hall_selected
+        self.view.msg('Introduce el nuevo numero de columnas: (deja en blanco para dejar igual)')
+        input_text = input()
+        new_seats_x = input_text if input_text != '' else seats_x
+        self.view.msg('Introduce el nuevo numero de filas: (deja en blanco para dejar igual)')
+        input_text = input()
+        new_seats_y = input_text if input_text != '' else seats_y
+
+        result = self.model.update_hall(hall_selected, new_name, new_seats_x, new_seats_y)
+        self.view.success('modificar sala') if result else self.view.error('modificar sala')
+
+    def delete_hall(self):
+        halls = self.model.get_halls_list()
+        self.view.show_halls(halls)
+        self.view.msg('Selecciona un numero de sala a eliminar')
+        number_selected = input()
+        hall_selected = halls[int(number_selected)-1][0]
+
+        result = self.model.delete_hall(hall_selected)
+        self.view.success('eliminar sala') if result else self.view.error('eliminar sala')
+
     "Schedules"
     def schedules_menu(self):
         o = '0'
@@ -136,72 +243,6 @@ class Controller:
         result = self.model.update_schedule(movie_schedule_id, new_hall, new_movie, new_schedule)
         self.view.success('modificar horario') if result else self.view.error('modificar horario')
 
-    "Halls"
-    def halls_menu(self):
-        o = '0'
-        while o == '0':
-            self.view.show_halls_methods()
-            o = input()
-            if o == '1':
-                self.show_halls()
-            if o == '2':
-                self.add_hall()
-            elif o == '3':
-                self.edit_hall()
-            elif o == '4':
-                self.delete_hall()
-            elif o == '5':
-                self.main_menu(1)
-        return
-
-    def show_halls(self):
-        halls = self.model.get_halls_list()
-        self.view.show_halls(halls)
-        self.halls_menu()
-
-    def add_hall(self):
-        self.view.msg('Introduce el nombre de la sala')
-        new_name = input()
-        self.view.msg('Introduce el numero de columnas de asientos')
-        new_x = input()
-        self.view.msg('Introduce el numero de filas de asientos')
-        new_y = input()
-
-        result = self.model.insert_hall(new_name, new_x, new_y)
-        self.view.success('agregar sala') if result else self.view.error('agregar sala')
-
-    def edit_hall(self):
-        halls = self.model.get_halls_list()
-        self.view.show_halls(halls)
-        self.view.msg('Selecciona un numero de sala a editar')
-        number_selected = input()
-        hall_selected = halls[int(number_selected)-1][0]
-        seats_x = halls[int(number_selected)-1][1]
-        seats_y = halls[int(number_selected)-1][2]
-
-        self.view.msg('Introduce el nuevo nombre de la sala: (deja en blanco para dejar igual)')
-        input_text = input()
-        new_name = input_text if input_text != '' else hall_selected
-        self.view.msg('Introduce el nuevo numero de columnas: (deja en blanco para dejar igual)')
-        input_text = input()
-        new_seats_x = input_text if input_text != '' else seats_x
-        self.view.msg('Introduce el nuevo numero de filas: (deja en blanco para dejar igual)')
-        input_text = input()
-        new_seats_y = input_text if input_text != '' else seats_y
-
-        result = self.model.update_hall(hall_selected, new_name, new_seats_x, new_seats_y)
-        self.view.success('modificar sala') if result else self.view.error('modificar sala')
-
-    def delete_hall(self):
-        halls = self.model.get_halls_list()
-        self.view.show_halls(halls)
-        self.view.msg('Selecciona un numero de sala a eliminar')
-        number_selected = input()
-        hall_selected = halls[int(number_selected)-1][0]
-
-        result = self.model.delete_hall(hall_selected)
-        self.view.success('eliminar sala') if result else self.view.error('eliminar sala')
-    
     "Movies"
     def movies_menu(self):
         o = '0'
@@ -271,7 +312,7 @@ class Controller:
         return
     
     def buy_ticket_menu(self):
-        movies = self.model.get_schedules_list()
+        movies = self.model.get_schedules()
         self.view.show_movies(movies)
         self.view.msg('Introduce el numero de la pelicula para la que deseas comprar el boleto:')
         number_selected = input()
