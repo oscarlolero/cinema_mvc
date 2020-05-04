@@ -13,12 +13,9 @@ class View:
     def msg(self, output):
         print(output)
 
-    def error(self, err):
-        print('ERROR: '+ err)
-
     def main_menu(self, is_admin):
         if is_admin:
-            print('Bienvenido al panel de administracion')
+            print('Bienvenido al panel de administración')
             print('1. Peliculas')
             print('2. Salas')
             print('3. Horarios')
@@ -36,13 +33,60 @@ class View:
     def option(self, last):
         print('Selecciona una opcion (1-'+last+'):', end = '')
 
-    "Users methods"
-    "Schedules"
+    def success(self, operation):
+        print(f'Operación "{operation}" realizada con éxito.')
+    
+    def error(self, operation):
+        print(f'Hubo un error en la operación "{operation}".')
 
-    def show_schedules(self, schedules):
-        table = PrettyTable(['Pelicula', 'Clasificacion', 'Horarios'])
-        for schedule in schedules:
-            table.add_row([schedule[0], schedule[1], schedule[2]])
+    
+    "** Admin methods"
+
+    "Schedule methods"
+    def show_schedules_methods(self):
+        print('Menú de horarios')
+        print('1. Ver todos los horarios')
+        print('2. Agregar horario')
+        print('3. Editar horario')
+        print('4. Eliminar horario')
+        print('5. Regresar')
+        self.option('5')
+    
+    "Halls methods"
+    def show_halls_methods(self):
+        print('Menú de salas')
+        print('1. Ver todas las salas')
+        print('2. Agregar sala')
+        print('3. Editar sala')
+        print('4. Eliminar sala')
+        print('5. Regresar')
+        self.option('5')
+    
+    def show_halls(self, halls):
+        table = PrettyTable(['Numero', 'Nombre', 'Columnas', 'Filas'])
+        index = 1
+        for hall in halls:
+            table.add_row([index, hall[0], hall[1], hall[2]])
+            index += 1
+        print(table)
+    "Movies methods"
+    def show_movies_methods(self):
+        print('Menú de películas')
+        print('1. Ver todas las películas')
+        print('2. Agregar película')
+        print('3. Editar película')
+        print('4. Eliminar película')
+        print('5. Regresar')
+        self.option('5')
+
+    "** Users methods"
+    "Schedules"
+    def show_detailed_movie_schedules(self, movie_schedules):
+        table = PrettyTable(['Numero', 'Pelicula', 'Clasificacion', 'Horario'])
+        index = 1
+        for movie in movie_schedules:
+            table.add_row([index, movie[1], movie[2], movie[3]])
+            index += 1
         print(table)
 
     "Movies methods"

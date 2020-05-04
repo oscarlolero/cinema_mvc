@@ -30,28 +30,163 @@ class Model:
         record = self.cursor.fetchone()
         return record
 
-    "* Users methods"
-    "  * Schedules methods"
-    def get_schedules_list(self):
+    "* Admin methods"
+    "Schedules methods"
+    def delete_schedule(self, movie_schedule_id):
+        print(movie_schedule_id)
         try:
-            sql = 'SELECT movies.name, movies.rating, GROUP_CONCAT(movie_schedules.time SEPARATOR ",") time FROM movies JOIN movie_schedules ON movies.movie_id = movie_schedules.movie_id GROUP BY movies.name'
+            sql = 'DELETE FROM movie_schedules WHERE movie_schedule_id = %s'
+            self.cursor.execute(sql, (movie_schedule_id,))
+            self.cnx.commit()
+            return True
+        except connector.Error as err:
+            print(err)
+            return err
+        
+    def update_schedule(self, movie_schedule_id, hall_selected, movie_selected, new_schedule):
+        try:
+            print(movie_schedule_id, hall_selected, movie_selected, new_schedule)
+            sql = 'SELECT movies.movie_id FROM movies WHERE name = %s'
+            self.cursor.execute(sql, (movie_selected,))
+            movie_id = self.cursor.fetchone()[0]
+            sql = 'SELECT halls.hall_id FROM halls WHERE name = %s'
+            self.cursor.execute(sql, (hall_selected,))
+            hall_id = self.cursor.fetchone()[0]
+
+            sql = 'UPDATE movie_schedules SET hall_id = %s, movie_id = %s, time = %s WHERE movie_schedule_id = %s'
+            self.cursor.execute(sql, (hall_id, movie_id, new_schedule, movie_schedule_id))
+            self.cnx.commit()
+            return True
+        except connector.Error as err:
+            print(err)
+            return err
+    def get_detailed_schedules_list(self):
+        try:
+            sql = 'SELECT movie_schedules.movie_schedule_id,movies.name, halls.name, movie_schedules.time FROM movies JOIN movie_schedules ON movies.movie_id = movie_schedules.movie_id JOIN halls ON halls.hall_id = movie_schedules.hall_id'
+            self.cursor.execute(sql)
+            records = self.cursor.fetchall()
+            return records
+        except connector.Error as err:
+            return err
+            
+    def get_movie_schedules(self, movie_selected):
+        try:
+            sql = 'SELECT movies.name, movies.rating FROM movies'
             self.cursor.execute(sql)
             records = self.cursor.fetchall()
             return records
         except connector.Error as err:
             return err
 
+    def insert_schedule(self, movie_selected, hall_selected, date):
+        try:
+            sql = 'SELECT movies.movie_id FROM movies WHERE name = %s'
+            self.cursor.execute(sql, (movie_selected,))
+            movie_id = self.cursor.fetchone()[0]
+            sql = 'SELECT halls.hall_id FROM halls WHERE name = %s'
+            self.cursor.execute(sql, (hall_selected,))
+            hall_id = self.cursor.fetchone()[0]
+
+            sql = 'INSERT INTO movie_schedules (`hall_id`, `movie_id`, `time`) VALUES(%s, %s, %s)'
+            self.cursor.execute(sql, (movie_id, hall_id, date))
+            self.cnx.commit()
+            return True
+        except connector.Error as err:
+            print(err)
+            return err
+
+    "Halls methods"
+    def insert_hall(self, new_name, new_x, new_y):
+        try:
+            sql = 'INSERT INTO halls (`name`, `seats_x`, `seats_y`) VALUES(%s, %s, %s)'
+            self.cursor.execute(sql, (new_name, new_x, new_y))
+            self.cnx.commit()
+            return True
+        except connector.Error as err:
+            print(err)
+            return err
+
+    def get_halls_list(self):
+        try:
+            sql = 'SELECT halls.name, halls.seats_x, halls.seats_y FROM halls'
+            self.cursor.execute(sql)
+            records = self.cursor.fetchall()
+            return records
+        except connector.Error as err:
+            return err
+
+    def update_hall(self, name, new_name, new_seats_x, new_seats_y):
+        try:
+            sql = 'UPDATE halls SET name = %s, seats_x = %s, seats_y = %s WHERE name = %s'
+            self.cursor.execute(sql, (new_name, new_seats_x, new_seats_y, name))
+            self.cnx.commit()
+            return True
+        except connector.Error as err:
+            print(err)
+            return err
+
+    def delete_hall(self, hall):
+        try:
+            sql = 'DELETE FROM halls WHERE name = %s'
+            self.cursor.execute(sql, (hall,))
+            self.cnx.commit()
+            return True
+        except connector.Error as err:
+            print(err)
+            return err
+
+    "Movies methods"
+    def get_movies_list(self):
+        try:
+            sql = 'SELECT movies.name, movies.rating FROM movies'
+            self.cursor.execute(sql)
+            records = self.cursor.fetchall()
+            return records
+        except connector.Error as err:
+            return err
+
+    def update_movie(self, movie_selected, new_name, new_classification):
+        try:
+            sql = 'UPDATE movies SET name = %s, rating = %s WHERE name = %s'
+            self.cursor.execute(sql, (new_name, new_classification, movie_selected))
+            self.cnx.commit()
+            return True
+        except connector.Error as err:
+            print(err)
+            return err
+    
+    def insert_movie(self, new_name, new_classification):
+        try:
+            sql = 'INSERT INTO movies (`name`, `rating`) VALUES(%s, %s)'
+            self.cursor.execute(sql, (new_name, new_classification))
+            self.cnx.commit()
+            return True
+        except connector.Error as err:
+            print(err)
+            return err
+
+    def delete_movie(self, movie):
+        try:
+            sql = 'DELETE FROM movies WHERE name = %s'
+            self.cursor.execute(sql, (movie,))
+            self.cnx.commit()
+            return True
+        except connector.Error as err:
+            print(err)
+            return err
+    
+    "* Users methods"
+    "Schedules methods"
+    def get_schedules_list(self):
+        try:
+            sql = 'SELECT movies.name, movies.rating, GROUP_CONCAT(movie_schedules.time SEPARATOR ', ') time FROM movies JOIN movie_schedules ON movies.movie_id = movie_schedules.movie_id GROUP BY movies.name;'
+            self.cursor.execute(sql)
+            records = self.cursor.fetchall()
+            return records
+        except connector.Error as err:
+            return err
 
     "Movie schedules"
-    # def get_function_schedule_id(self, movie_selected, schedule_selected):
-    #     try:
-    #         sql = 'SELECT movie_schedules.movie_schedule_id FROM movie_schedules JOIN movies ON movies.movie_id = movie_schedules.movie_id AND movies.name = %s AND movie_schedules.time = %s'
-    #         self.cursor.execute(sql, (movie_selected, schedule_selected))
-    #         record = self.cursor.fetchone()
-    #         return record
-    #     except connector.Error as err:
-    #         return err
-
 
     "Function schedules"
     def schedule_exists(self, date, time):

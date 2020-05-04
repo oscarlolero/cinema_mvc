@@ -3,4 +3,4 @@ from controller.controller import Controller
 import string
 
 c = Controller()
-c.start()
+c.delete_schedule()
