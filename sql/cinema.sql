@@ -55,10 +55,10 @@ CREATE TABLE tickets (
 );
 
 
-INSERT INTO users (`username`, `password`, `is_admin`) VALUES('user', 'lol', false);
-INSERT INTO users (`username`, `password`, `is_admin`) VALUES('admin', 'lol', true);
-INSERT INTO movies (`name`, `rating`) VALUES('Lolis', 'C');
-INSERT INTO movies (`name`, `rating`) VALUES('Lolis 2', 'C');
+INSERT INTO users (`username`, `password`, `is_admin`) VALUES('user', '123', false);
+INSERT INTO users (`username`, `password`, `is_admin`) VALUES('admin', 'password', true);
+INSERT INTO movies (`name`, `rating`) VALUES('Avengers', 'B');
+INSERT INTO movies (`name`, `rating`) VALUES('Lolita', 'C');
 INSERT INTO halls (`name`, `seats_x`, `seats_y`) VALUES ('SALA 1', 5, 3);
 INSERT INTO halls (`name`, `seats_x`, `seats_y`) VALUES ('SALA 2', 5, 3);
 
@@ -66,21 +66,21 @@ INSERT INTO movie_schedules (`hall_id`, `movie_id`, `time`) VALUES(1, 1, '10:00 
 INSERT INTO movie_schedules (`hall_id`, `movie_id`, `time`) VALUES(1, 1, '11:00 pm');
 INSERT INTO movie_schedules (`hall_id`, `movie_id`, `time`) VALUES(2, 2, '09:00 pm');
 INSERT INTO movie_schedules (`hall_id`, `movie_id`, `time`) VALUES(2, 2, '12:00 pm');
-INSERT INTO function_schedules (`movie_schedule_id`, `date`) VALUES(1, '28-04-2020');
-INSERT INTO function_schedules (`movie_schedule_id`, `date`) VALUES(3, '27-04-2020');
--- INSERT INTO function_schedules (`movie_schedule_id`, `date`) VALUES(3, '27-04-2020');
+INSERT INTO function_schedules (`movie_schedule_id`, `date`) VALUES(1, '04-05-2020');
+INSERT INTO function_schedules (`movie_schedule_id`, `date`) VALUES(3, '04-04-2020');
+INSERT INTO function_schedules (`movie_schedule_id`, `date`) VALUES(3, '05-04-2020');
 INSERT INTO tickets (`function_schedule_id`, `user_id`, `seat`) VALUES(1, 1, 'A2');
 INSERT INTO tickets (`function_schedule_id`, `user_id`, `seat`) VALUES(1, 1, 'A3');
 INSERT INTO tickets (`function_schedule_id`, `user_id`, `seat`) VALUES(2, 1, 'A1');
 
-DELETE FROM movie_schedules WHERE movie_schedule_id = 1;
+-- DELETE FROM movie_schedules WHERE movie_schedule_id = 1;
 -- GET FUNC SCHEDULE ID
 -- SELECT movie_schedules.movie_schedule_id FROM movie_schedules
  -- JOIN movies ON movies.movie_id = movie_schedules.movie_id
  -- AND movies.name = 'Lolis 2' AND movie_schedules.time = '12:00 pm'
 -- SELECT * FROM movies;
 -- SELECT * FROM halls;
-SELECT * FROM movie_schedules;
+-- SELECT * FROM movie_schedules;
 -- SELECT * FROM function_schedules;
  -- SELECT * FROM tickets;
 

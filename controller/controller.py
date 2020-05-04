@@ -18,9 +18,9 @@ class Controller:
         self.view.msg('Introduce tu contraseña')
         password = input()
         user = self.model.auth_user(username, password)
-        self.user_id = user[0]
-        self.is_admin = user[3]
         if type(user) == tuple:
+            self.user_id = user[0]
+            self.is_admin = user[3]
             self.main_menu(user[3])
         else:
             if user == None:
