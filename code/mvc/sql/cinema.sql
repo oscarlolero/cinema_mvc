@@ -75,10 +75,10 @@ INSERT INTO movie_schedules (`hall_id`, `movie_id`, `time`) VALUES(2, 2, '12:00 
 INSERT INTO function_schedules (`movie_schedule_id`, `date`) VALUES(1, '04-05-2020');
 INSERT INTO function_schedules (`movie_schedule_id`, `date`) VALUES(3, '04-04-2020');
 INSERT INTO function_schedules (`movie_schedule_id`, `date`) VALUES(3, '05-04-2020');
-INSERT INTO tickets (`function_schedule_id`, `seat`) VALUES(1, 'A2');
-INSERT INTO tickets (`function_schedule_id`, `seat`) VALUES(1, 'A3');
-INSERT INTO tickets (`function_schedule_id`, `seat`) VALUES(2, 'A1');
-INSERT INTO user_tickets(`ticket_id`, `user_id`) VALUES (1, 1);
+-- INSERT INTO tickets (`function_schedule_id`, `seat`) VALUES(1, 'A2');
+-- INSERT INTO tickets (`function_schedule_id`, `seat`) VALUES(1, 'A3');
+-- INSERT INTO tickets (`function_schedule_id`, `seat`) VALUES(2, 'A1');
+-- INSERT INTO user_tickets(`ticket_id`, `user_id`) VALUES (1, 1);
 -- DELETE FROM movie_schedules WHERE movie_schedule_id = 1;
 -- GET FUNC SCHEDULE ID
 -- SELECT movie_schedules.movie_schedule_id FROM movie_schedules
@@ -94,13 +94,13 @@ INSERT INTO user_tickets(`ticket_id`, `user_id`) VALUES (1, 1);
  -- SELECT movie_schedules.movie_schedule_id,movies.name, halls.name, movie_schedules.time FROM movies JOIN movie_schedules ON movies.movie_id = movie_schedules.movie_id JOIN halls ON halls.hall_id = movie_schedules.hall_id;
 
 -- Get user tickets
-SELECT movies.name, function_schedules.date, movie_schedules.time, halls.name, GROUP_CONCAT(tickets.seat SEPARATOR ", ") AS seats FROM user_tickets
-JOIN tickets ON user_tickets.user_id = tickets.user_id
-JOIN function_schedules ON tickets.function_schedule_id = function_schedules.function_schedule_id
-JOIN movie_schedules ON function_schedules.movie_schedule_id = movie_schedules.movie_schedule_id
-JOIN movies ON movie_schedules.movie_id = movies.movie_id
-JOIN halls ON movie_schedules.hall_id = halls.hall_id
-AND user_tickets.user_id = 1 GROUP BY function_schedules.function_schedule_id ORDER BY function_schedules.date
+-- SELECT movies.name, function_schedules.date, movie_schedules.time, halls.name, GROUP_CONCAT(tickets.seat SEPARATOR ", ") AS seats FROM user_tickets
+-- JOIN tickets ON user_tickets.user_id = tickets.user_id
+-- JOIN function_schedules ON tickets.function_schedule_id = function_schedules.function_schedule_id
+-- JOIN movie_schedules ON function_schedules.movie_schedule_id = movie_schedules.movie_schedule_id
+-- JOIN movies ON movie_schedules.movie_id = movies.movie_id
+-- JOIN halls ON movie_schedules.hall_id = halls.hall_id
+-- AND user_tickets.user_id = 1 GROUP BY function_schedules.function_schedule_id ORDER BY function_schedules.date
 -- GROUP_CONCAT(tickets.seat SEPARATOR ",")
 -- SELECT function_schedules.function_schedule_id, GROUP_CONCAT(tickets.seat SEPARATOR ",") as seats FROM tickets
 -- JOIN function_schedules ON function_schedules.function_schedule_id = tickets.function_schedule_id
